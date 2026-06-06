@@ -3,7 +3,7 @@
 | Phase | Name | Status |
 |-------|------|--------|
 | 0 | Environment Setup | In Progress |
-| 1 | Backend + Database + Auth | Complete ✅ |
+| 1 | Backend + Database + Auth | Built ⚠️ — confirmation deferred to Phase 7 |
 | 2 | NBA Data + Moments | In Progress |
 | 3 | Timeline Mapping | Not Started |
 | 4 | FFmpeg Clip Cutting | Not Started |

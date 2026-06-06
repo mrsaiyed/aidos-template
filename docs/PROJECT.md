@@ -52,6 +52,7 @@ No YouTube upload. No cloud storage. No OAuth. NBA only.
 
 ## Current Phase
 Phase 2: NBA Data + Moments — IN PROGRESS
+Note: Phase 1 auth built but confirmation deferred to Phase 7
 
 ## What Is Working
 - FastAPI backend serving on port 8000
@@ -68,3 +69,10 @@ Phase 2: NBA Data + Moments — IN PROGRESS
 - Single sanitize_player_name function in paths.py used everywhere
 - Static files served by FastAPI at /outputs for video preview
 - Background tasks for pipeline so API does not time out
+- Auth deprioritized — auth system built in Phase 1 but full confirmation deferred until frontend is ready in Phase 7. Core logic exists: register, login, logout, me endpoints all created. Confirmation blocked on PowerShell curl issues, not code issues.
+
+## Documentation Rules
+These docs are updated after every phase and every key decision.
+No phase is marked complete without passing its acceptance criteria.
+If a phase is deferred or partially complete it is marked as such.
+ROADMAP.html status is updated in sync with PHASES.md.

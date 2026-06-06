@@ -175,11 +175,12 @@ const phases = [
       { text: "Auth endpoints: register, login, logout, me" },
       { text: "Game endpoints: create, list, get, upload video" },
       { text: "Wire routers into main.py" },
+      { text: "Confirm full auth flow end to end — deferred to Phase 7" },
     ],
     criteria: "Can register, log in, create a game, and upload an MP4. All stored in SQLite."
   },
   {
-    num: 2, name: "NBA data + moments", status: "pending",
+    num: 2, name: "NBA data + moments", status: "progress",
     goal: "Fetch play-by-play for game 0052000121 and extract highlight moments.",
     outputs: "moments table rows for dunks, threes, blocks, steals, clutch plays. Mock fallback JSON.",
     tasks: [
