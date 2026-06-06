@@ -6,8 +6,10 @@ import os
 from app.db.database import engine, Base
 from app.models.user import User
 from app.models.game import Game
+from app.models.moment import Moment
 from app.api.auth import router as auth_router
 from app.api.games import router as games_router
+from app.api.moments import router as moments_router
 
 app = FastAPI(title="NBA Highlight MVP")
 
@@ -24,6 +26,7 @@ app.mount("/outputs", StaticFiles(directory="data/outputs"), name="outputs")
 
 app.include_router(auth_router, prefix="/api/auth")
 app.include_router(games_router, prefix="/api/games")
+app.include_router(moments_router, prefix="/api")
 
 
 @app.get("/health")

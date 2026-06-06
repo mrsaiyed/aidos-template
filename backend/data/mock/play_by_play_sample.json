@@ -1,0 +1,227 @@
+[
+  {
+    "game_id": "0052000121",
+    "period": 1,
+    "clock": "11:42",
+    "player_name": "Anthony Davis",
+    "team": "LAL",
+    "event_type": "made_shot",
+    "description": "A. Davis 2' Dunk (2 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 1,
+    "clock": "10:15",
+    "player_name": "Stephen Curry",
+    "team": "GSW",
+    "event_type": "made_shot",
+    "description": "S. Curry 26' 3PT Jump Shot (3 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 1,
+    "clock": "9:03",
+    "player_name": "LeBron James",
+    "team": "LAL",
+    "event_type": "made_shot",
+    "description": "L. James 2' Layup (2 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 1,
+    "clock": "7:48",
+    "player_name": "Draymond Green",
+    "team": "GSW",
+    "event_type": "steal",
+    "description": "D. Green STEAL (1 STL)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 1,
+    "clock": "6:22",
+    "player_name": "Andrew Wiggins",
+    "team": "GSW",
+    "event_type": "made_shot",
+    "description": "A. Wiggins 12' Jump Shot (2 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 1,
+    "clock": "4:55",
+    "player_name": "Anthony Davis",
+    "team": "LAL",
+    "event_type": "block",
+    "description": "A. Davis BLOCK (1 BLK)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 1,
+    "clock": "3:10",
+    "player_name": "Kentavious Caldwell-Pope",
+    "team": "LAL",
+    "event_type": "made_shot",
+    "description": "K. Caldwell-Pope 18' Jump Shot (2 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 2,
+    "clock": "11:30",
+    "player_name": "LeBron James",
+    "team": "LAL",
+    "event_type": "made_shot",
+    "description": "L. James 2' Dunk (4 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 2,
+    "clock": "9:45",
+    "player_name": "Stephen Curry",
+    "team": "GSW",
+    "event_type": "made_shot",
+    "description": "S. Curry 24' 3PT Jump Shot (6 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 2,
+    "clock": "8:12",
+    "player_name": "Dennis Schroder",
+    "team": "LAL",
+    "event_type": "made_shot",
+    "description": "D. Schroder 14' Jump Shot (2 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 2,
+    "clock": "6:40",
+    "player_name": "Anthony Davis",
+    "team": "LAL",
+    "event_type": "block",
+    "description": "A. Davis BLOCK (2 BLK)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 2,
+    "clock": "5:18",
+    "player_name": "Jordan Poole",
+    "team": "GSW",
+    "event_type": "made_shot",
+    "description": "J. Poole 10' Jump Shot (2 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 2,
+    "clock": "3:55",
+    "player_name": "LeBron James",
+    "team": "LAL",
+    "event_type": "made_shot",
+    "description": "L. James 27' 3PT Jump Shot (7 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 3,
+    "clock": "11:05",
+    "player_name": "Stephen Curry",
+    "team": "GSW",
+    "event_type": "steal",
+    "description": "S. Curry STEAL (1 STL)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 3,
+    "clock": "9:20",
+    "player_name": "Draymond Green",
+    "team": "GSW",
+    "event_type": "made_shot",
+    "description": "D. Green 3' Layup (4 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 3,
+    "clock": "7:33",
+    "player_name": "Anthony Davis",
+    "team": "LAL",
+    "event_type": "made_shot",
+    "description": "A. Davis 2' Dunk (8 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 3,
+    "clock": "5:47",
+    "player_name": "Andrew Wiggins",
+    "team": "GSW",
+    "event_type": "made_shot",
+    "description": "A. Wiggins 15' Jump Shot (4 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 3,
+    "clock": "3:22",
+    "player_name": "LeBron James",
+    "team": "LAL",
+    "event_type": "made_shot",
+    "description": "L. James 8' Hook Shot (10 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 4,
+    "clock": "10:10",
+    "player_name": "Stephen Curry",
+    "team": "GSW",
+    "event_type": "made_shot",
+    "description": "S. Curry 30' 3PT Jump Shot (30 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 4,
+    "clock": "7:25",
+    "player_name": "Kentavious Caldwell-Pope",
+    "team": "LAL",
+    "event_type": "made_shot",
+    "description": "K. Caldwell-Pope 22' Jump Shot (8 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 4,
+    "clock": "4:50",
+    "player_name": "Draymond Green",
+    "team": "GSW",
+    "event_type": "made_shot",
+    "description": "D. Green 2' Layup (6 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 4,
+    "clock": "2:15",
+    "player_name": "Anthony Davis",
+    "team": "LAL",
+    "event_type": "made_shot",
+    "description": "A. Davis 12' Jump Shot (14 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 4,
+    "clock": "1:30",
+    "player_name": "Stephen Curry",
+    "team": "GSW",
+    "event_type": "made_shot",
+    "description": "S. Curry 25' 3PT Jump Shot (37 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 4,
+    "clock": "0:58",
+    "player_name": "LeBron James",
+    "team": "LAL",
+    "event_type": "made_shot",
+    "description": "L. James 34' 3PT Jump Shot (GO-AHEAD) (22 PTS)"
+  },
+  {
+    "game_id": "0052000121",
+    "period": 4,
+    "clock": "0:12",
+    "player_name": "Stephen Curry",
+    "team": "GSW",
+    "event_type": "missed_shot",
+    "description": "S. Curry 27' 3PT Jump Shot MISS"
+  }
+]

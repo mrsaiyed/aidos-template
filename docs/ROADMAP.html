@@ -180,7 +180,7 @@ const phases = [
     criteria: "Can register, log in, create a game, and upload an MP4. All stored in SQLite."
   },
   {
-    num: 2, name: "NBA data + moments", status: "progress",
+    num: 2, name: "NBA data + moments", status: "done",
     goal: "Fetch play-by-play for game 0052000121 and extract highlight moments.",
     outputs: "moments table rows for dunks, threes, blocks, steals, clutch plays. Mock fallback JSON.",
     tasks: [
@@ -194,7 +194,7 @@ const phases = [
     criteria: "Given game ID 0052000121, moments table is populated. Mock fallback works when API is down."
   },
   {
-    num: 3, name: "Timeline mapping", status: "pending",
+    num: 3, name: "Timeline mapping", status: "progress",
     goal: "Convert NBA game clock + period into a video timestamp in seconds.",
     outputs: "video_time_seconds field populated on every moment record.",
     tasks: [

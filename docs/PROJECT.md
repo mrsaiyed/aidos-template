@@ -51,7 +51,7 @@ No YouTube upload. No cloud storage. No OAuth. NBA only.
 - AI coding: opencode + DeepSeek V4 Pro
 
 ## Current Phase
-Phase 2: NBA Data + Moments — IN PROGRESS
+Phase 3: Timeline Mapping — IN PROGRESS
 Note: Phase 1 auth built but confirmation deferred to Phase 7
 
 ## What Is Working
@@ -60,6 +60,9 @@ Note: Phase 1 auth built but confirmation deferred to Phase 7
 - SQLite database with User and Game tables (auto-created on startup)
 - Auth: register, login (JWT in httponly cookie), logout, me
 - Games API: create, list, get, upload video
+- NBA play-by-play fetch with mock fallback
+- Moment extraction with importance scoring
+- moments table in SQLite
 
 ## What Is Blocked
 - Nothing yet
@@ -70,9 +73,24 @@ Note: Phase 1 auth built but confirmation deferred to Phase 7
 - Static files served by FastAPI at /outputs for video preview
 - Background tasks for pipeline so API does not time out
 - Auth deprioritized — auth system built in Phase 1 but full confirmation deferred until frontend is ready in Phase 7. Core logic exists: register, login, logout, me endpoints all created. Confirmation blocked on PowerShell curl issues, not code issues.
+- constants.py is the single source of truth for all pipeline numbers. If a number appears in more than one place it belongs in constants.py instead.
+- conftest.py mock_events is the canonical test dataset. Any new test that needs play-by-play events uses this fixture.
 
 ## Documentation Rules
 These docs are updated after every phase and every key decision.
 No phase is marked complete without passing its acceptance criteria.
 If a phase is deferred or partially complete it is marked as such.
 ROADMAP.html status is updated in sync with PHASES.md.
+- Unit tests written alongside every service
+- Run pytest before every git push
+- All tests must pass before a phase is marked complete
+- Test files live in backend/tests/
+- Constants live in backend/app/utils/constants.py
+
+## Git Rules
+- Push to main after every completed phase
+- Always run git check-ignore on video files before committing
+- Never commit files from backend/data/uploads/ or backend/data/outputs/
+- Commit message format: "Phase N complete - one line summary"
+- If a phase is partial, commit with: "Phase N partial - what is done"
+- The video full_game.mp4 must never appear in git history
