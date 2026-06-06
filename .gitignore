@@ -75,3 +75,9 @@ coverage/
 backend/data/uploads/
 backend/data/outputs/
 backend/data/app.db
+backend/test.db
+test.db
+*.db
+test_phase2.py
+test.py
+test.ps1
