@@ -23,3 +23,14 @@ class MomentResponse(BaseModel):
 class FetchMomentsResponse(BaseModel):
     count: int
     moments: list[MomentResponse]
+
+
+class MappedMomentSample(BaseModel):
+    player_name: str
+    game_clock: str
+    video_time_seconds: float
+
+
+class MapTimelineResponse(BaseModel):
+    count: int
+    sample: list[MappedMomentSample]

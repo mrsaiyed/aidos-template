@@ -194,7 +194,7 @@ const phases = [
     criteria: "Given game ID 0052000121, moments table is populated. Mock fallback works when API is down."
   },
   {
-    num: 3, name: "Timeline mapping", status: "progress",
+    num: 3, name: "Timeline mapping", status: "done",
     goal: "Convert NBA game clock + period into a video timestamp in seconds.",
     outputs: "video_time_seconds field populated on every moment record.",
     tasks: [
@@ -208,7 +208,7 @@ const phases = [
     criteria: "Q1 10:30 maps to Q1 start + 90s. Q3 6:00 maps to Q3 start + 360s."
   },
   {
-    num: 4, name: "FFmpeg clip cutting", status: "pending",
+    num: 4, name: "FFmpeg clip cutting", status: "progress",
     goal: "Cut a 20-second video clip around each highlight moment.",
     outputs: "Individual MP4 clips per moment in player folders. Clip records in SQLite.",
     tasks: [

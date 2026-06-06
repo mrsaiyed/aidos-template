@@ -13,6 +13,29 @@ User creates game → uploads video → enters quarter timestamps
 → user approves or rejects
 → approved videos copied to approved/ folder
 
+## Pipeline Services
+
+| Service | File | Responsibility |
+|---------|------|----------------|
+| NBAService | `nba_service.py` | Fetch play-by-play from nba_api with mock JSON fallback |
+| MomentService | `moment_service.py` | Filter highlight-worthy events and assign importance scores |
+| TimelineService | `timeline_service.py` | Convert period + game clock to video timestamp in seconds |
+
+### Timeline Formula
+
+```
+clock_remaining = parse_game_clock(game_clock)       # "MM:SS" → seconds remaining
+elapsed_in_period = QUARTER_DURATION_SECONDS - clock_remaining
+quarter_start = get_quarter_start(period, q1..q4)
+video_time = max(0.0, quarter_start + elapsed_in_period)
+```
+
+**Quarter start lookup:**
+- Period 1–4 → q1_start through q4_start
+- Period 5+ → q4_start + QUARTER_DURATION_SECONDS + (period - 5) × OVERTIME_DURATION_SECONDS
+
+**Example:** Q4 clock 0:58 with q4_start=6900 → elapsed=662s → video_time=7562.0
+
 ## Folder Structure
 backend/data/uploads/{game_id}/          ← uploaded full game video
 backend/data/outputs/{game_id}/clips/    ← individual moment clips by player
@@ -34,7 +57,7 @@ Run with: cd backend && pytest tests/ -v
 Test files:
 - conftest.py — shared fixtures: test DB, mock_events dataset
 - test_moment_service.py — moment extraction and scoring logic
-- test_timeline_service.py — to be added in Phase 3
+- test_timeline_service.py — game clock parsing and video time calculation
 - test_clip_service.py — to be added in Phase 4
 - test_render_service.py — to be added in Phase 5
 
@@ -59,3 +82,4 @@ Current constants:
 - FRAME_SAMPLE_INTERVAL_SECONDS = 30
 - NBA_QUARTERS = [1, 2, 3, 4]
 - OVERTIME_DURATION_SECONDS = 300
+- MAX_CLIPS_PER_PLAYER = 5

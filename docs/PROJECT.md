@@ -51,7 +51,7 @@ No YouTube upload. No cloud storage. No OAuth. NBA only.
 - AI coding: opencode + DeepSeek V4 Pro
 
 ## Current Phase
-Phase 3: Timeline Mapping — IN PROGRESS
+Phase 4: FFmpeg Clip Cutting — IN PROGRESS
 Note: Phase 1 auth built but confirmation deferred to Phase 7
 
 ## What Is Working
@@ -63,6 +63,9 @@ Note: Phase 1 auth built but confirmation deferred to Phase 7
 - NBA play-by-play fetch with mock fallback
 - Moment extraction with importance scoring
 - moments table in SQLite
+- Timeline mapping converts game clock to video timestamp
+- All 14 moments now have video_time_seconds populated
+- LeBron clutch three maps to correct video second (7562.0s)
 
 ## What Is Blocked
 - Nothing yet
@@ -75,6 +78,7 @@ Note: Phase 1 auth built but confirmation deferred to Phase 7
 - Auth deprioritized — auth system built in Phase 1 but full confirmation deferred until frontend is ready in Phase 7. Core logic exists: register, login, logout, me endpoints all created. Confirmation blocked on PowerShell curl issues, not code issues.
 - constants.py is the single source of truth for all pipeline numbers. If a number appears in more than one place it belongs in constants.py instead.
 - conftest.py mock_events is the canonical test dataset. Any new test that needs play-by-play events uses this fixture.
+- Timeline formula: elapsed = QUARTER_DURATION_SECONDS - clock_remaining, video_time = quarter_start + elapsed. Manual quarter timestamps for MVP; auto-detection in Phase 8.
 
 ## Documentation Rules
 These docs are updated after every phase and every key decision.

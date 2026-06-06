@@ -5,8 +5,8 @@
 | 0 | Environment Setup | In Progress |
 | 1 | Backend + Database + Auth | Built ⚠️ — confirmation deferred to Phase 7 |
 | 2 | NBA Data + Moments | Complete |
-| 3 | Timeline Mapping | In Progress |
-| 4 | FFmpeg Clip Cutting | Not Started |
+| 3 | Timeline Mapping | Complete |
+| 4 | FFmpeg Clip Cutting | In Progress |
 | 5 | Player Video Rendering | Not Started |
 | 6 | Pipeline Endpoint + Background Task | Not Started |
 | 7 | Frontend Review UI | Not Started |
