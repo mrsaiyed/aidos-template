@@ -6,19 +6,19 @@ service = ClipService()
 
 def test_calculate_clip_bounds_normal():
     start, end = service.calculate_clip_bounds(100.0, 7200.0)
-    assert start == 92.0
-    assert end == 112.0
+    assert start == 93.0
+    assert end == 101.0
 
 
 def test_calculate_clip_bounds_clamps_start():
     start, end = service.calculate_clip_bounds(3.0, 7200.0)
     assert start == 0.0
-    assert end == 15.0
+    assert end == 4.0
 
 
 def test_calculate_clip_bounds_clamps_end():
-    start, end = service.calculate_clip_bounds(7198.0, 7200.0)
-    assert start == 7190.0
+    start, end = service.calculate_clip_bounds(7199.5, 7200.0)
+    assert start == 7192.5
     assert end == 7200.0
 
 

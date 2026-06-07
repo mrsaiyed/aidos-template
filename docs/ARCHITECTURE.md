@@ -1,25 +1,25 @@
 # Architecture
 
 ## Pipeline Flow
-User creates game → uploads video → enters quarter timestamps
-→ backend fetches NBA play-by-play for game 0052000121
-→ moment service identifies highlight events
-→ timeline service maps game clock to video timestamp
-→ FFmpeg cuts individual clips per moment
-→ clips grouped by player
-→ FFmpeg renders one video per player
-→ video classified as Short (≤2min) or Video (>2min)
-→ frontend review page shows each player video
-→ user approves or rejects
-→ approved videos copied to approved/ folder
+User uploads video + enters NBA game ID + selects team + selects players
+→ backend fetches NBA play-by-play via nba_api
+→ moment service extracts made shots; stores score_before/score_after
+→ refinement service runs sequential anchor chain:
+    for each scoring play: watch.py scans narrow video window → agent reads frames → score change confirmed → timestamp stored
+→ FFmpeg cuts 8s clips per confirmed moment (7s pre-roll, 1s post-roll)
+→ clips grouped by player in output folders
+→ frontend shows clips per player for review
+→ (post-MVP) FFmpeg renders one compiled video per player
+→ (post-MVP) user approves or rejects compiled video
 
 ## Pipeline Services
 
 | Service | File | Responsibility |
 |---------|------|----------------|
-| NBAService | `nba_service.py` | Fetch play-by-play from nba_api with mock JSON fallback |
+| NBAService | `nba_service.py` | Fetch play-by-play from nba_api with mock JSON fallback; populate score_before/score_after |
 | MomentService | `moment_service.py` | Filter highlight-worthy events and assign importance scores |
-| TimelineService | `timeline_service.py` | Convert period + game clock to video timestamp in seconds |
+| TimelineService | `timeline_service.py` | Convert period + game clock to video timestamp (formula — MVP fallback only; drifts beyond early Q1) |
+| RefinementService | `refinement_service.py` | Sequential anchor chain: watch.py scan per play → frame analysis → confirmed video_time_seconds |
 | ClipService | `clip_service.py` | Select top moments per player and cut FFmpeg clips around each highlight |
 
 ### FFmpeg Utility (`ffmpeg.py`)
@@ -102,11 +102,16 @@ No hardcoded numbers anywhere else in the codebase.
 
 Current constants:
 - QUARTER_DURATION_SECONDS = 720 (12 minutes)
-- CLIP_PRE_ROLL_SECONDS = 8
-- CLIP_POST_ROLL_SECONDS = 12
+- CLIP_PRE_ROLL_SECONDS = 7 (shot lands at second 7 of 8s clip)
+- CLIP_POST_ROLL_SECONDS = 1 (1s for crowd reaction after score updates)
+- CLIP_TOTAL_SECONDS = 8
 - SHORT_MAX_DURATION_SECONDS = 120
 - MINIMUM_IMPORTANCE_SCORE = 70
 - FRAME_SAMPLE_INTERVAL_SECONDS = 30
 - NBA_QUARTERS = [1, 2, 3, 4]
 - OVERTIME_DURATION_SECONDS = 300
-- MAX_CLIPS_PER_PLAYER = 5
+- MAX_CLIPS_PER_PLAYER = 20 (raised for full-game reels)
+- REFINEMENT_WINDOW_SECONDS = 45 (watch scan window per play)
+- QUARTER_BREAK_SEARCH_SECONDS = 300 (wider window at quarter transitions)
+- DEGRADED_WINDOW_MULTIPLIER = 3 (expand 3× after NOT_FOUND)
+- DEAD_BALL_RATIO = 1.6 (broadcast time / game time; derived Q1: 1149s / 720s = 1.596)

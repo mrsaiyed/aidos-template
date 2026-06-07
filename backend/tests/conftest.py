@@ -31,7 +31,9 @@ def mock_events():
             "event_subtype": "three_pointer",
             "period": 4,
             "game_clock": "0:58",
-            "description": "LeBron James 3PT Jump Shot"
+            "description": "LeBron James 3PT Jump Shot",
+            "score_before": "LAL 100 GSW 100",
+            "score_after": "LAL 103 GSW 100",
         },
         {
             "player_name": "Anthony Davis",
@@ -40,7 +42,9 @@ def mock_events():
             "event_subtype": "dunk",
             "period": 2,
             "game_clock": "8:14",
-            "description": "Anthony Davis Dunk"
+            "description": "Anthony Davis Dunk",
+            "score_before": "LAL 30 GSW 28",
+            "score_after": "LAL 32 GSW 28",
         },
         {
             "player_name": "Stephen Curry",
@@ -49,7 +53,9 @@ def mock_events():
             "event_subtype": "three_pointer",
             "period": 3,
             "game_clock": "4:22",
-            "description": "Stephen Curry 3PT Jump Shot"
+            "description": "Stephen Curry 3PT Jump Shot",
+            "score_before": "LAL 55 GSW 52",
+            "score_after": "LAL 55 GSW 55",
         },
         {
             "player_name": "Draymond Green",
@@ -58,7 +64,9 @@ def mock_events():
             "event_subtype": None,
             "period": 1,
             "game_clock": "6:30",
-            "description": "Draymond Green Steal"
+            "description": "Draymond Green Steal",
+            "score_before": "LAL 7 GSW 9",
+            "score_after": "LAL 7 GSW 9",
         },
         {
             "player_name": "Anthony Davis",
@@ -67,7 +75,9 @@ def mock_events():
             "event_subtype": None,
             "period": 2,
             "game_clock": "3:15",
-            "description": "Anthony Davis Block"
+            "description": "Anthony Davis Block",
+            "score_before": "LAL 40 GSW 38",
+            "score_after": "LAL 40 GSW 38",
         },
         {
             "player_name": "Dennis Schroder",
@@ -76,6 +86,8 @@ def mock_events():
             "event_subtype": "layup",
             "period": 1,
             "game_clock": "9:45",
-            "description": "Dennis Schroder Layup"
-        }
+            "description": "Dennis Schroder Layup",
+            "score_before": "LAL 2 GSW 2",
+            "score_after": "LAL 4 GSW 2",
+        },
     ]

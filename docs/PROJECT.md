@@ -45,13 +45,21 @@ What needs to be built for full vision:
   Cloud storage per user account
 
 ## MVP North Star
-Local pipeline: NBA game ID + uploaded video + quarter timestamps
-→ player-specific highlight videos → review UI → approved output folder.
+Local pipeline: NBA game ID + uploaded video
+→ team selector + player selector
+→ player-specific highlight clips → view per player in browser.
 No YouTube upload. No cloud storage. No OAuth. NBA only.
 MVP scope: one game, one team, buckets only.
 All other reel types and time periods are post-MVP.
-Architecture already supports them — just needs
-frontend filters and multi-game processing.
+Architecture already supports them — just needs frontend filters and multi-game processing.
+
+**Hackathon MVP Frontend (Phase 7):**
+- Upload full game video + enter NBA game ID
+- Choose team (LAL or GSW from the upload)
+- Select players to clip (multi-select or "Full team — all scorers")
+- Trigger pipeline (fetch moments → refine moments → generate clips)
+- View generated clips per player in the browser
+- No approve/reject flow in hackathon MVP — just view and download
 
 ## The Game We Are Using
 - Teams: Golden State Warriors vs Los Angeles Lakers
@@ -81,8 +89,9 @@ frontend filters and multi-game processing.
 - AI coding: opencode + DeepSeek V4 Pro
 
 ## Current Phase
-Phase 5A: Full Game Pipeline — Self-Correcting Timestamp Refinement — NOT STARTED
-Note: Phase 1 auth built but confirmation deferred to Phase 7
+Phase 5B: Q2–Q4 Pipeline Extension
+Note: Phase 5A Q1 agent-driven run complete June 7 2026. Q2–Q4 runs are next, followed by Phase 6 (pipeline endpoint) and Phase 7 (hackathon MVP frontend).
+Phase 1 auth built but confirmation deferred to Phase 7.
 
 ## What Is Working
 - FastAPI backend serving on port 8000
@@ -91,23 +100,20 @@ Note: Phase 1 auth built but confirmation deferred to Phase 7
 - Auth: register, login (JWT in httponly cookie), logout, me
 - Games API: create, list, get, upload video
 - NBA play-by-play fetch with mock fallback
-- Moment extraction with importance scoring
-- moments table in SQLite
-- Timeline mapping converts game clock to video timestamp
-- All 14 moments now have video_time_seconds populated
-- LeBron clutch three maps to correct video second (7562.0s)
-- FFmpeg clip cutting working
-- Clips generated per player in output folders
+- Moment extraction with importance scoring (score_before, score_after stored on each moment)
+- moments table in SQLite with refinement_method and status columns
+- Timeline mapping converts game clock to video timestamp (formula — drifts; replaced by anchor chain)
+- FFmpeg clip cutting working (8s clips: 7s pre-roll, 1s post-roll)
 - Clip records stored in SQLite with file paths
-- Real Q1 timestamps confirmed: start=34s, end=1308s
-- Lakers Q1 buckets only — correct scope for MVP demo
-- **3-clip watch test complete (June 2026):** claude-video watch skill manually
-  confirmed exact video timestamps for 3 Q1 Lakers plays using NBA API score context:
-  - Drummond dunk → 82s (formula estimated 78s — 4s drift, acceptable)
-  - KCP 3PT → 442s (formula estimated 348s — 94s drift, formula unusable)
-  - Davis floater → 1177s (formula estimated 693s — 484s drift, formula unusable)
-  This confirmed that NBA API score signatures (score_before / score_after) reliably
-  identify the exact frame in a watch scan. Sequential anchor chain architecture validated.
+- RefinementService built with sequential anchor chain logic
+- POST /api/games/{id}/refine-moments endpoint (BackgroundTask)
+- Q1 hard cap removed — clips now generated for all 4 quarters
+- **3-clip watch test complete (June 2026):** confirmed exact video timestamps for 3 Q1 Lakers plays:
+  - Drummond dunk → 82s, KCP 3PT → 442s, Davis floater → 1177s
+- **Q1 agent-driven run complete (June 7, 2026):** all 7 LAL scoring plays confirmed via watch.py frame analysis:
+  - Drummond (82s), LeBron (258s), KCP ×2 (442s, 687s), Caruso ×2 (752s, 947s), AD (1176s)
+  - 7 clips generated across 5 player folders; each exactly 8s, correctly centered on the score change
+  - Self-correcting anchor chain validated: zero NOT_FOUND across all 7 plays; max drift 4s from anchor
 
 ## What Is Blocked
 - Nothing yet
@@ -126,7 +132,7 @@ Note: Phase 1 auth built but confirmation deferred to Phase 7
 - Two processing modes: buckets = all made shots, no filtering by type; highlights = dunks, threes, blocks, steals, clutch only. MVP uses buckets mode for all clip generation.
 - **3-clip watch test (June 2026):** formula-only timeline unusable beyond early Q1 due to dead-ball drift. Confirmed that NBA API score_before/score_after + claude-video watch scan reliably finds exact video second within ±5s.
 - **Self-correcting anchor chain (Phase 5A decision):** each confirmed video timestamp becomes the new search anchor for the next play. No manual Q2/Q3/Q4 timestamps needed. Q1 hard cap removed. Phase 8 auto quarter detection superseded by this approach.
-- CLIP_PRE_ROLL_SECONDS = 4, CLIP_POST_ROLL_SECONDS = 4, CLIP_TOTAL_SECONDS = 8 (updated June 2026 after watch test clip review).
+- CLIP_PRE_ROLL_SECONDS = 7, CLIP_POST_ROLL_SECONDS = 1, CLIP_TOTAL_SECONDS = 8 (calibrated June 7 2026 from Q1 agent run — shot scores at exactly second 7 of the 8s clip, crowd reaction visible in post-roll second).
 - score_before and score_after will be stored as strings on Moment model (e.g. "LAL 4 GSW 15") and sourced from scoreHome/scoreAway fields already present in the raw NBA API response.
 - refinement_method stored on each Moment: "watch_confirmed" | "interpolated" | "formula" to track data quality.
 

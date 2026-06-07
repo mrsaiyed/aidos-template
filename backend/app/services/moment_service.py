@@ -33,6 +33,9 @@ class MomentService:
                 event_subtype=event.get("event_subtype"),
                 period=event["period"],
                 game_clock=event["game_clock"],
+                description=event.get("description"),
+                score_before=event.get("score_before"),
+                score_after=event.get("score_after"),
                 importance_score=score,
                 status="pending",
             )

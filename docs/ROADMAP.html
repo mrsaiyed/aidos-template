@@ -237,22 +237,41 @@ const phases = [
     criteria: "Each player has one compiled video. Duration and type stored in DB. Status = needs_review."
   },
   {
-    num: "5A", name: "Full game pipeline — self-correcting timestamps", status: "pending",
+    num: "5A", name: "Full game pipeline — self-correcting timestamps", status: "progress",
     goal: "Clip every Lakers made shot across all 4 quarters using a self-correcting anchor chain. NBA API score signatures + watch scans replace the formula-based timeline which drifts up to 484s by late Q1.",
-    outputs: "score_before/score_after on Moment model. RefinementService with anchor chain. POST /refine-moments endpoint. All LAL made shots confirmed across Q1–Q4. Q1 hard cap removed.",
+    outputs: "score_before/score_after on Moment model. RefinementService with anchor chain. POST /refine-moments endpoint. Q1 all 7 LAL plays confirmed and clipped. Q1 hard cap removed.",
     tasks: [
-      { text: "Add score_before, score_after columns to Moment model" },
-      { text: "Populate score fields from NBA API scoreHome/scoreAway" },
-      { text: "Build RefinementService with sequential anchor chain" },
-      { text: "Track last_confirmed_second separately from running anchor" },
-      { text: "Interpolate NOT_FOUND via clock gap × DEAD_BALL_RATIO (1.4)" },
-      { text: "Expand window 3× after any NOT_FOUND (degraded flag)" },
-      { text: "Handle quarter transitions with QUARTER_BREAK_SEARCH_SECONDS" },
-      { text: "Wire POST /refine-moments into API as BackgroundTask" },
-      { text: "Remove Q1 hard cap from ClipService and clips endpoint" },
-      { text: "Full game end-to-end validation across all 4 quarters" },
+      { text: "Add score_before, score_after columns to Moment model — done" },
+      { text: "Populate score fields from NBA API scoreHome/scoreAway — done" },
+      { text: "Build RefinementService with sequential anchor chain — done" },
+      { text: "Track last_confirmed_second separately from running anchor — done" },
+      { text: "Interpolate NOT_FOUND via clock gap × DEAD_BALL_RATIO (1.6) — done" },
+      { text: "Expand window 3× after any NOT_FOUND (degraded flag) — done" },
+      { text: "Handle quarter transitions with QUARTER_BREAK_SEARCH_SECONDS — done" },
+      { text: "Wire POST /refine-moments into API as BackgroundTask — done" },
+      { text: "Remove Q1 hard cap from ClipService and clips endpoint — done" },
+      { text: "Q1 agent-driven run: 7/7 LAL plays confirmed, 7 clips generated — done" },
+      { text: "Q2–Q4 runs — pending (Phase 5B)" },
     ],
-    criteria: "All LAL scorers have confirmed clips across Q1–Q4. NOT_FOUND plays do not break chain. Consecutive misses use clock-scaled interpolation from last confirmed anchor, not from each other."
+    criteria: "Q1 ✅ — all 7 LAL scoring plays confirmed via watch.py frame analysis. 7 clips in 5 player folders. Zero NOT_FOUND. Anchor chain validated. Q2–Q4 pending."
+  },
+  {
+    num: "5B", name: "Q2–Q4 pipeline extension", status: "pending",
+    goal: "Extend the Q1-validated anchor chain run to cover all remaining quarters. The anchor chain crosses quarter breaks automatically via QUARTER_BREAK_SEARCH_SECONDS. Each quarter's first confirmed play resets the anchor.",
+    outputs: "All LAL made shots in Q2, Q3, Q4 confirmed with video_time_seconds. Full-game clip folders per player. ~20–30 clips per high-volume player (LeBron, Davis, KCP).",
+    tasks: [
+      { text: "Run fetch-moments for Q2 (period=2)" },
+      { text: "Agent-driven refinement: Q2 plays via watch.py scans" },
+      { text: "Generate Q2 clips" },
+      { text: "Run fetch-moments for Q3 (period=3)" },
+      { text: "Agent-driven refinement: Q3 plays" },
+      { text: "Generate Q3 clips" },
+      { text: "Run fetch-moments for Q4 (period=4, includes LeBron clutch 3PT)" },
+      { text: "Agent-driven refinement: Q4 plays" },
+      { text: "Generate Q4 clips" },
+      { text: "Verify all player folders across all 4 quarters" },
+    ],
+    criteria: "All LAL scorers have clips across Q1–Q4. LeBron clutch 3PT confirmed in Q4. All clips play correct content."
   },
   {
     num: 6, name: "Pipeline endpoint", status: "pending",
@@ -268,19 +287,21 @@ const phases = [
     criteria: "Single API call triggers full pipeline. Status visible in real time. Failures don't crash server."
   },
   {
-    num: 7, name: "Frontend review UI", status: "pending",
-    goal: "Next.js app where user logs in, sees games, and does rapid-fire approve/reject of player videos.",
-    outputs: "Login page, game dashboard, review page with video preview and approve/reject flow.",
+    num: 7, name: "Hackathon MVP frontend", status: "pending",
+    goal: "Next.js app: upload game video, enter game ID, choose team, select players, trigger pipeline, view clips per player in browser. Hackathon demo-ready in one flow.",
+    outputs: "Upload page (video + game ID + team picker). Player selector (multi or full team). Pipeline trigger button with live status. Clips viewer: per-player tabs, each clip playable in browser.",
     tasks: [
       { text: "Create Next.js app in frontend/" },
-      { text: "Login page with email and password" },
-      { text: "Game dashboard with status and process button" },
-      { text: "Review page: one player at a time, video plays" },
-      { text: "Approve and reject buttons with progress counter" },
-      { text: "Summary screen after all players reviewed" },
+      { text: "Upload page: video file input + game ID text field" },
+      { text: "Team selector: LAL or GSW (from uploaded game)" },
+      { text: "Player selector: multi-select or 'Full team — all scorers'" },
+      { text: "Trigger pipeline: POST /api/games/{id}/process (fetch → refine → clip)" },
+      { text: "Live status polling: GET /api/games/{id} every 2s" },
+      { text: "Clips viewer: tabs per player, video element per clip" },
       { text: "Video src from /outputs static files on FastAPI" },
+      { text: "Basic styling — clean, dark, functional" },
     ],
-    criteria: "User can log in, process a game, watch videos, approve or reject each. Approved files saved."
+    criteria: "Demo flow under 5 minutes: upload video → pick team → pick players → see clips in browser. No login required for hackathon demo."
   },
   {
     num: 8, name: "Auto quarter detection", status: "superseded",

@@ -24,10 +24,25 @@ class NBAService:
 
             pbp = playbyplayv2.PlayByPlayV2(game_id=nba_game_id)
             df = pbp.get_data_frames()[0]
-            events = df.to_dict(orient="records")
-            return [self.normalize_event(event) for event in events]
+            raw_events = df.to_dict(orient="records")
         except Exception:
-            return [self.normalize_event(event) for event in self.load_mock_play_by_play()]
+            raw_events = self.load_mock_play_by_play()
+
+        return self._build_score_context(raw_events)
+
+    def _build_score_context(self, raw_events: list[dict]) -> list[dict]:
+        prev_home, prev_away = "0", "0"
+        normalized = []
+        for raw in raw_events:
+            event = self.normalize_event(raw)
+            curr_home = str(raw.get("scoreHome") or prev_home)
+            curr_away = str(raw.get("scoreAway") or prev_away)
+            # scoreHome = LAL score, scoreAway = GSW score for game 0052000121
+            event["score_before"] = f"LAL {prev_home} GSW {prev_away}"
+            event["score_after"] = f"LAL {curr_home} GSW {curr_away}"
+            prev_home, prev_away = curr_home, curr_away
+            normalized.append(event)
+        return normalized
 
     def load_mock_play_by_play(self) -> list[dict]:
         real_path = os.path.join(MOCK_DIR, "real_play_by_play.json")

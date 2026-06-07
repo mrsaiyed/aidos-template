@@ -12,9 +12,13 @@ class MomentResponse(BaseModel):
     event_subtype: Optional[str] = None
     period: int
     game_clock: str
+    description: Optional[str] = None
+    score_before: Optional[str] = None
+    score_after: Optional[str] = None
     video_time_seconds: Optional[float] = None
     importance_score: int
     status: str
+    refinement_method: Optional[str] = None
     created_at: datetime
 
     model_config = {"from_attributes": True}

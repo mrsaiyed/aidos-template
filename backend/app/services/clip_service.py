@@ -15,8 +15,6 @@ from app.models.clip import Clip
 
 logger = logging.getLogger(__name__)
 
-Q1_END_SECONDS = 1308.0
-
 
 class ClipService:
 
@@ -83,25 +81,6 @@ class ClipService:
                     file_path=None,
                     status="skipped",
                     error_message="no video timestamp",
-                )
-                db.add(clip)
-                db.commit()
-                db.refresh(clip)
-                clips.append(clip)
-                continue
-
-            # Guard: beyond Q1 scope
-            if moment.video_time_seconds > Q1_END_SECONDS:
-                clip = Clip(
-                    game_id=game_id,
-                    moment_id=moment.id,
-                    player_name=moment.player_name,
-                    start_seconds=0.0,
-                    end_seconds=0.0,
-                    duration_seconds=0.0,
-                    file_path=None,
-                    status="skipped",
-                    error_message="beyond Q1 scope",
                 )
                 db.add(clip)
                 db.commit()
