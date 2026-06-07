@@ -33,6 +33,7 @@ def list_moments(
 @router.post("/games/{game_id}/fetch-moments", response_model=FetchMomentsResponse)
 def fetch_moments(
     game_id: int,
+    mode: str = "buckets",
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -44,7 +45,7 @@ def fetch_moments(
     moment_service = MomentService()
 
     events = nba_service.fetch_play_by_play(game.nba_game_id)
-    moments = moment_service.process_events(events, game.id, db)
+    moments = moment_service.process_events(events, game.id, db, mode=mode)
 
     game.status = "creating_moments"
     db.commit()

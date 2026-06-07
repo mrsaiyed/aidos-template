@@ -81,3 +81,18 @@ test.db
 test_phase2.py
 test.py
 test.ps1
+test_watch_video.py
+.watch_test_output/
+
+# Watch skill test scripts and outputs
+fetch_lakers_h1.py
+calculate_windows.py
+find_timestamps.py
+cut_watch_clips.py
+lakers_h1_buckets.json
+search_windows.json
+found_timestamps.json
+backend/data/outputs/0052000121/watch_test_clips/
+
+# Claude skills (local install)
+~/.claude/

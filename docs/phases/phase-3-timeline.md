@@ -36,8 +36,19 @@ Complete
 - Formula is elapsed = QUARTER_DURATION - clock_remaining, video_time = quarter_start + elapsed
 - Overtime supported but not tested with real data yet
 - Manual quarter timestamps used for MVP
-- Auto-detection planned for Phase 8
+- Auto-detection planned for Phase 8 — **superseded by Phase 5A self-correcting anchor chain**
 - All constants imported from app.utils.constants (QUARTER_DURATION_SECONDS, OVERTIME_DURATION_SECONDS)
+
+## Known Limitation (documented June 2026)
+Formula produces significant drift due to dead-ball time (timeouts, free throws, replays):
+| Play | Formula estimate | Watch-confirmed actual | Drift |
+|------|-----------------|----------------------|-------|
+| Drummond dunk (early Q1) | 78s | 82s | ~4s — acceptable |
+| KCP 3PT (mid Q1) | 348s | 442s | ~94s — unusable |
+| Davis floater (late Q1) | 693s | 1177s | ~484s — completely wrong |
+
+Phase 5A replaces formula timestamps with watch-confirmed timestamps using NBA API
+score_before/score_after context and a sequential anchor chain.
 
 ## Timeline Formula
 

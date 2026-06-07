@@ -13,10 +13,16 @@ class MomentService:
 
     MINIMUM_IMPORTANCE = 70
 
-    def process_events(self, events: list[dict], game_id: int, db) -> list:
+    def process_events(
+        self,
+        events: list[dict],
+        game_id: int,
+        db,
+        mode: str = "buckets",
+    ) -> list:
         moments = []
         for event in events:
-            if not self.is_highlight_worthy(event):
+            if not self.is_highlight_worthy(event, mode=mode):
                 continue
             score = self.score_event(event)
             moment = Moment(
@@ -37,9 +43,16 @@ class MomentService:
             db.refresh(moment)
         return moments
 
-    def is_highlight_worthy(self, event: dict) -> bool:
+    def is_highlight_worthy(
+        self,
+        event: dict,
+        mode: str = "highlights",
+    ) -> bool:
         event_type = event.get("event_type")
         event_subtype = event.get("event_subtype")
+
+        if mode == "buckets":
+            return event_type == "made_shot"
 
         if event_type == "made_shot" and event_subtype in ["three_pointer", "dunk"]:
             return True

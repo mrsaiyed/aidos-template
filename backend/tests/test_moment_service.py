@@ -21,6 +21,42 @@ def test_dunk_is_highlight_worthy():
     }
     assert service.is_highlight_worthy(event) is True
 
+def test_buckets_mode_includes_layup():
+    event = {
+        "event_type": "made_shot",
+        "event_subtype": "layup",
+        "period": 1,
+        "game_clock": "8:00"
+    }
+    assert service.is_highlight_worthy(event, mode="buckets") is True
+
+def test_buckets_mode_includes_jump_shot():
+    event = {
+        "event_type": "made_shot",
+        "event_subtype": "jump_shot",
+        "period": 1,
+        "game_clock": "8:00"
+    }
+    assert service.is_highlight_worthy(event, mode="buckets") is True
+
+def test_buckets_mode_excludes_missed_shot():
+    event = {
+        "event_type": "missed_shot",
+        "event_subtype": "jump_shot",
+        "period": 1,
+        "game_clock": "8:00"
+    }
+    assert service.is_highlight_worthy(event, mode="buckets") is False
+
+def test_highlights_mode_excludes_layup():
+    event = {
+        "event_type": "made_shot",
+        "event_subtype": "layup",
+        "period": 1,
+        "game_clock": "8:00"
+    }
+    assert service.is_highlight_worthy(event, mode="highlights") is False
+
 def test_layup_is_not_highlight_worthy():
     event = {
         "event_type": "made_shot",
@@ -109,7 +145,7 @@ def test_process_events_creates_moments(db, mock_events):
     db.add(game)
     db.flush()
     
-    moments = service.process_events(mock_events, game.id, db)
-    highlight_events = [e for e in mock_events 
-                       if service.is_highlight_worthy(e)]
+    moments = service.process_events(mock_events, game.id, db, mode="highlights")
+    highlight_events = [e for e in mock_events
+                       if service.is_highlight_worthy(e, mode="highlights")]
     assert len(moments) == len(highlight_events)

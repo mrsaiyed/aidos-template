@@ -1,5 +1,6 @@
 import json
 import os
+import re
 
 from app.utils.paths import MOCK_DIR
 
@@ -29,14 +30,58 @@ class NBAService:
             return [self.normalize_event(event) for event in self.load_mock_play_by_play()]
 
     def load_mock_play_by_play(self) -> list[dict]:
-        path = os.path.join(MOCK_DIR, "play_by_play_sample.json")
+        real_path = os.path.join(MOCK_DIR, "real_play_by_play.json")
+        sample_path = os.path.join(MOCK_DIR, "play_by_play_sample.json")
+        path = real_path if os.path.exists(real_path) else sample_path
         with open(path, encoding="utf-8") as f:
             return json.load(f)
 
     def normalize_event(self, raw_event: dict) -> dict:
+        clock = raw_event.get("clock", "")
+        if clock and str(clock).startswith("PT"):
+            return self._normalize_real_api_event(raw_event)
         if "EVENTMSGTYPE" in raw_event:
             return self._normalize_nba_api_event(raw_event)
         return self._normalize_mock_event(raw_event)
+
+    def _parse_pt_clock(self, clock: str) -> str:
+        match = re.match(r"PT(\d+)M([\d.]+)S", clock)
+        if not match:
+            return "12:00"
+        minutes = int(match.group(1))
+        seconds = int(float(match.group(2)))
+        return f"{minutes}:{seconds:02d}"
+
+    def _normalize_real_api_event(self, raw_event: dict) -> dict:
+        description = raw_event.get("description") or ""
+        is_field_goal = raw_event.get("isFieldGoal") == 1
+        shot_result = raw_event.get("shotResult")
+
+        if is_field_goal and shot_result == "Made":
+            event_type = "made_shot"
+        elif is_field_goal:
+            event_type = "missed_shot"
+        else:
+            event_type = (raw_event.get("actionType") or "other").lower()
+
+        if event_type == "turnover" and "STEAL" in description.upper():
+            event_type = "steal"
+        elif event_type == "missed_shot" and "BLOCK" in description.upper():
+            event_type = "block"
+
+        event_subtype = None
+        if event_type == "made_shot":
+            event_subtype = self._detect_shot_subtype(description)
+
+        return {
+            "player_name": raw_event.get("playerName") or "",
+            "team": raw_event.get("teamTricode") or None,
+            "event_type": event_type,
+            "event_subtype": event_subtype,
+            "period": int(raw_event.get("period", 0)),
+            "game_clock": self._parse_pt_clock(raw_event.get("clock", "")),
+            "description": description,
+        }
 
     def _normalize_nba_api_event(self, raw_event: dict) -> dict:
         event_type_num = raw_event.get("EVENTMSGTYPE")
@@ -98,6 +143,8 @@ class NBAService:
         if "LAYUP" in desc_upper:
             return "layup"
         if "JUMP SHOT" in desc_upper:
+            return "jump_shot"
+        if "FLOATING" in desc_upper:
             return "jump_shot"
         if "HOOK" in desc_upper:
             return "hook_shot"

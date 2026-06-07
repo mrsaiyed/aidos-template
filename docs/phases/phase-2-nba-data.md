@@ -46,6 +46,8 @@ Complete
 - pytest must pass before every git push
 - conftest.py provides shared test fixtures for all future tests
 - mock_events fixture in conftest.py is the standard test dataset for all pipeline tests going forward
+- Real NBA API schema differs from mock schema. normalize_event() handles both formats automatically. Real clock format PT11M23.00S parsed to MM:SS.
+- Buckets mode captures ALL made shots regardless of importance score. Highlights mode uses score threshold. Mode passed at API level — pipeline is filter-agnostic. This supports the full vision: every bucket gets clipped.
 
 ## Highlight Rules and Scores
 

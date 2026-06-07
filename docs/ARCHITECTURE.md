@@ -20,6 +20,17 @@ User creates game → uploads video → enters quarter timestamps
 | NBAService | `nba_service.py` | Fetch play-by-play from nba_api with mock JSON fallback |
 | MomentService | `moment_service.py` | Filter highlight-worthy events and assign importance scores |
 | TimelineService | `timeline_service.py` | Convert period + game clock to video timestamp in seconds |
+| ClipService | `clip_service.py` | Select top moments per player and cut FFmpeg clips around each highlight |
+
+### FFmpeg Utility (`ffmpeg.py`)
+
+| Function | Responsibility |
+|----------|----------------|
+| `cut_clip` | Cut a segment from full game video using libx264 + aac |
+| `get_video_duration` | Probe video length via ffprobe (ffmpeg fallback on Windows) |
+| `concatenate_clips` | Concatenate clips via FFmpeg concat demuxer (used in Phase 5) |
+
+All file paths are resolved through `paths.py` — never hardcoded.
 
 ### Timeline Formula
 
@@ -43,8 +54,24 @@ backend/data/outputs/{game_id}/rendered/ ← one compiled video per player
 backend/data/outputs/{game_id}/approved/ ← approved final videos
 backend/data/mock/                       ← mock play-by-play JSON fallback
 
-## DB Schema (to be defined in Phase 1)
+## DB Schema
+
 Tables: users, games, moments, clips, rendered_videos
+
+### clips
+| Column | Type | Notes |
+|--------|------|-------|
+| id | Integer | Primary key |
+| game_id | Integer | FK → games.id, indexed |
+| moment_id | Integer | FK → moments.id |
+| player_name | String | Not null |
+| start_seconds | Float | Clip start in full video |
+| end_seconds | Float | Clip end in full video |
+| duration_seconds | Float | end - start |
+| file_path | String | Nullable; absolute path to MP4 |
+| status | String | pending, generated, failed |
+| error_message | String | Nullable |
+| created_at | DateTime | UTC default |
 
 ## API Endpoints (to be defined in Phase 1)
 See phase-1-backend.md when complete.
@@ -58,7 +85,7 @@ Test files:
 - conftest.py — shared fixtures: test DB, mock_events dataset
 - test_moment_service.py — moment extraction and scoring logic
 - test_timeline_service.py — game clock parsing and video time calculation
-- test_clip_service.py — to be added in Phase 4
+- test_clip_service.py — clip bounds calculation and top-moment selection
 - test_render_service.py — to be added in Phase 5
 
 Rules:

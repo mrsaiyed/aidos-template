@@ -66,6 +66,7 @@
     .s-done { background: var(--color-background-success); color: var(--color-text-success); }
     .s-progress { background: var(--color-background-warning); color: var(--color-text-warning); }
     .s-pending { background: var(--color-background-secondary); color: var(--color-text-tertiary); }
+    .s-superseded { background: var(--color-background-secondary); color: var(--color-text-tertiary); text-decoration: line-through; opacity: 0.6; }
     .connector { width: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 40px; }
     .connector-line { width: 100%; height: 1px; background: var(--color-border-secondary); position: relative; }
     .connector-line::after { content:''; position:absolute; right:-4px; top:-3px; width:0; height:0; border-top:3.5px solid transparent; border-bottom:3.5px solid transparent; border-left:5px solid var(--color-border-secondary); }
@@ -205,10 +206,10 @@ const phases = [
       { text: "Write validation tests with example moments" },
       { text: "Update all moments with video_time_seconds" },
     ],
-    criteria: "Q1 10:30 maps to Q1 start + 90s. Q3 6:00 maps to Q3 start + 360s."
+    criteria: "Q1 10:30 maps to Q1 start + 90s. Q3 6:00 maps to Q3 start + 360s. ⚠️ Known limitation: formula drifts due to dead-ball time. Late Q1 drift confirmed at 484s. Replaced by Phase 5A anchor chain for production use."
   },
   {
-    num: 4, name: "FFmpeg clip cutting", status: "progress",
+    num: 4, name: "FFmpeg clip cutting", status: "done",
     goal: "Cut a 20-second video clip around each highlight moment.",
     outputs: "Individual MP4 clips per moment in player folders. Clip records in SQLite.",
     tasks: [
@@ -222,7 +223,7 @@ const phases = [
     criteria: "Every moment produces a playable MP4 clip. File paths stored in DB. Player folders created."
   },
   {
-    num: 5, name: "Player video rendering", status: "pending",
+    num: 5, name: "Player video rendering", status: "progress",
     goal: "Concatenate each player's clips into one highlight video. Classify as Short or normal.",
     outputs: "One compiled MP4 per player. Duration measured. output_type set. rendered_videos table populated.",
     tasks: [
@@ -234,6 +235,24 @@ const phases = [
       { text: "Create rendered_video records in SQLite" },
     ],
     criteria: "Each player has one compiled video. Duration and type stored in DB. Status = needs_review."
+  },
+  {
+    num: "5A", name: "Full game pipeline — self-correcting timestamps", status: "pending",
+    goal: "Clip every Lakers made shot across all 4 quarters using a self-correcting anchor chain. NBA API score signatures + watch scans replace the formula-based timeline which drifts up to 484s by late Q1.",
+    outputs: "score_before/score_after on Moment model. RefinementService with anchor chain. POST /refine-moments endpoint. All LAL made shots confirmed across Q1–Q4. Q1 hard cap removed.",
+    tasks: [
+      { text: "Add score_before, score_after columns to Moment model" },
+      { text: "Populate score fields from NBA API scoreHome/scoreAway" },
+      { text: "Build RefinementService with sequential anchor chain" },
+      { text: "Track last_confirmed_second separately from running anchor" },
+      { text: "Interpolate NOT_FOUND via clock gap × DEAD_BALL_RATIO (1.4)" },
+      { text: "Expand window 3× after any NOT_FOUND (degraded flag)" },
+      { text: "Handle quarter transitions with QUARTER_BREAK_SEARCH_SECONDS" },
+      { text: "Wire POST /refine-moments into API as BackgroundTask" },
+      { text: "Remove Q1 hard cap from ClipService and clips endpoint" },
+      { text: "Full game end-to-end validation across all 4 quarters" },
+    ],
+    criteria: "All LAL scorers have confirmed clips across Q1–Q4. NOT_FOUND plays do not break chain. Consecutive misses use clock-scaled interpolation from last confirmed anchor, not from each other."
   },
   {
     num: 6, name: "Pipeline endpoint", status: "pending",
@@ -264,17 +283,17 @@ const phases = [
     criteria: "User can log in, process a game, watch videos, approve or reject each. Approved files saved."
   },
   {
-    num: 8, name: "Auto quarter detection", status: "pending",
-    goal: "Automatically detect quarter start timestamps from the video using OCR.",
-    outputs: "quarter_detector.py service. Q1-Q4 timestamps auto-populated. Manual override still available.",
+    num: 8, name: "Auto quarter detection", status: "superseded",
+    goal: "Superseded by Phase 5A. The self-correcting anchor chain removes the need for OCR-based quarter detection — confirmed play timestamps replace manual quarter calibration entirely.",
+    outputs: "No new outputs. Phase 5A anchor chain handles quarter transitions implicitly via QUARTER_BREAK_SEARCH_SECONDS window.",
     tasks: [
-      { text: "Sample frames every 30s with FFmpeg" },
-      { text: "Run Tesseract OCR on scoreboard region" },
-      { text: "Detect Q1/Q2/Q3/Q4 + 12:00 clock pattern" },
-      { text: "Store detected timestamps in game record" },
-      { text: "Frontend shows detected values with manual override" },
+      { text: "Sample frames every 30s with FFmpeg — superseded" },
+      { text: "Run Tesseract OCR on scoreboard region — superseded" },
+      { text: "Detect Q1/Q2/Q3/Q4 + 12:00 clock pattern — superseded" },
+      { text: "Store detected timestamps in game record — superseded" },
+      { text: "Frontend shows detected values with manual override — superseded" },
     ],
-    criteria: "System finds quarter starts within 5 seconds without manual input. Manual entry still works."
+    criteria: "Superseded. Phase 5A anchor chain and QUARTER_BREAK_SEARCH_SECONDS handle this implicitly."
   },
   {
     num: 9, name: "Demo polish", status: "pending",
@@ -293,9 +312,10 @@ const phases = [
 ];
 
 const statusConfig = {
-  done:     { label: "Complete",    cls: "s-done",     icon: "ti-circle-check" },
-  progress: { label: "In progress", cls: "s-progress", icon: "ti-circle-dashed" },
-  pending:  { label: "Not started", cls: "s-pending",  icon: "ti-circle" },
+  done:        { label: "Complete",    cls: "s-done",        icon: "ti-circle-check" },
+  progress:    { label: "In progress", cls: "s-progress",    icon: "ti-circle-dashed" },
+  pending:     { label: "Not started", cls: "s-pending",     icon: "ti-circle" },
+  superseded:  { label: "Superseded",  cls: "s-superseded",  icon: "ti-circle-x" },
 };
 
 const track = document.getElementById('track');
